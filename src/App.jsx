@@ -6,7 +6,8 @@ import Input from './components/Input';
 export default function App() {
 
     const blankForm = { username: '', password: '' }
-    const [user, setUser] = useState(blankForm);
+    const [userR, setUserR] = useState(blankForm);
+    const [userL, setUserL] = useState(blankForm);
     const [registerResponse, setRegisterResponse] = useState('');
     const [loginResponse, setLoginResponse] = useState('');
 
@@ -21,12 +22,12 @@ export default function App() {
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(user),
+  body: JSON.stringify(userR),
 })
 .then(response => response.json())
 .then(data => {
   setRegisterResponse(data.message);
-  setUser(blankForm)
+  setUserR(blankForm)
 })
 .catch((error) => {
   console.log("Error")
@@ -45,17 +46,20 @@ export default function App() {
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(user),
+  body: JSON.stringify(userL),
 })
 .then(response => response.json())
 .then(data => {
 if(data.data) {
   setLoginResponse(data.data);
+  localStorage.setItem("token", data.data)
+  const token = localStorage.getItem('token');
+  console.log(token)
 }
 else{
     setLoginResponse("Invalid Username or Password")
 }
-  setUser(blankForm)
+  setUserL(blankForm)
 })
 .catch((error) => {
   console.log("Error")
@@ -71,11 +75,20 @@ else{
     // You can safely ignore everything below this line, it's just boilerplate
     // so you can focus on the exercise requirements
 
-    const handleChange = (e) => {
+    const handleChangeR = (e) => {
         const { value, name } = e.target;
 
-        setUser({
-            ...user,
+        setUserR({
+            ...userR,
+            [name]: value
+        });
+    }
+
+    const handleChangeL = (e) => {
+        const { value, name } = e.target;
+
+        setUserL({
+            ...userL,
             [name]: value
         });
     }
@@ -93,16 +106,16 @@ else{
                         type='text'
                         name='username'
                         placeholder='Username'
-                        value={user.username}
-                        handleChange={handleChange}
+                        value={userR.username}
+                        handleChange={handleChangeR}
                     />,
                     <Input
                         key={2}
                         type='password'
                         name='password'
                         placeholder='Password'
-                        value={user.password}
-                        handleChange={handleChange}
+                        value={userR.password}
+                        handleChange={handleChangeR}
                     />
                 ]}
             />
@@ -119,16 +132,16 @@ else{
                         type='text'
                         name='username'
                         placeholder='Username'
-                        value={user.username}
-                        handleChange={handleChange}
+                        value={userL.username}
+                        handleChange={handleChangeL}
                     />,
                     <Input
                         key={2}
                         type='password'
                         name='password'
                         placeholder='Password'
-                        value={user.password}
-                        handleChange={handleChange}
+                        value={userL.password}
+                        handleChange={handleChangeL}
                     />
                 ]}
             />
