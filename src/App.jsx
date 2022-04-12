@@ -4,21 +4,62 @@ import Form from './components/Form';
 import Input from './components/Input';
 
 export default function App() {
-    const [user, setUser] = useState({ username: '', password: '' });
+
+    const blankForm = { username: '', password: '' }
+    const [user, setUser] = useState(blankForm);
     const [registerResponse, setRegisterResponse] = useState('');
     const [loginResponse, setLoginResponse] = useState('');
 
     const register = async (e) => {
         e.preventDefault();
-        // Write your register code here
 
+    setRegisterResponse("")
+    setLoginResponse("")
+    
+        fetch('http://localhost:4000/register', {
+  method: 'POST', 
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(user),
+})
+.then(response => response.json())
+.then(data => {
+  setRegisterResponse(data.message);
+  setUser(blankForm)
+})
+.catch((error) => {
+  console.log("Error")
+});
 
     };
 
     const login = async (e) => {
         e.preventDefault();
-        // Write your login code here
 
+        setRegisterResponse("")
+        setLoginResponse("")
+
+        fetch('http://localhost:4000/login', {
+  method: 'POST', 
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(user),
+})
+.then(response => response.json())
+.then(data => {
+if(data.data) {
+  setLoginResponse(data.data);
+}
+else{
+    setLoginResponse("Invalid Username or Password")
+}
+  setUser(blankForm)
+})
+.catch((error) => {
+  console.log("Error")
+});
         
     };
 
